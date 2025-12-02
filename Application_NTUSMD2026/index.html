@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>國立臺灣大學 男七學院 115學年度碩士班甄試錄取名單</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>國立臺灣大學 男七學院</h1>
+            <h2>115學年度碩士班甄試入學 錄取名單公告</h2>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="search-panel">
+            <label for="dept-select"><i class="fas fa-university"></i> 選擇系所：</label>
+            <select id="dept-select">
+                <option value="" disabled selected>-- 請選擇查詢系所 --</option>
+            </select>
+        </div>
+
+        <div id="result-area" class="result-area hidden">
+            <h3 id="dept-title"></h3>
+            
+            <div class="table-container">
+                <table class="main-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">序號</th>
+                            <th style="width: 15%;">准考證號</th>
+                            <th style="width: 15%;">姓名</th>
+                            <th style="width: 15%;">正備取</th>
+                            <th style="width: 15%;">報到狀態</th>
+                            <th style="width: 15%;">遞補狀態</th>
+                            <th style="width: 20%;">備註</th>
+                        </tr>
+                    </thead>
+                    <tbody id="student-list-body">
+                        </tbody>
+                </table>
+            </div>
+            
+            <div class="footer-note">
+                <p>※ 正取生請於 114/12/15 前完成報到手續，逾期視同放棄。</p>
+                <p>※ 備取生請密切留意本院網站遞補公告。</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 College of Seven Male Dormitory. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

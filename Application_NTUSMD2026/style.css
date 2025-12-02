@@ -1,0 +1,100 @@
+:root {
+    --primary-color: #003366;
+    --accent-color: #d4af37;
+    --bg-color: #f4f7f6;
+    --border-color: #ddd;
+}
+
+body {
+    font-family: 'Segoe UI', "Microsoft JhengHei", sans-serif;
+    background-color: var(--bg-color);
+    margin: 0;
+    color: #333;
+}
+
+.container {
+    max-width: 1100px; /* 加寬容器以容納多欄位 */
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 2rem 0;
+    text-align: center;
+    border-bottom: 5px solid var(--accent-color);
+}
+
+.search-panel {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin: 30px 0;
+    text-align: center;
+}
+
+select {
+    padding: 10px;
+    font-size: 1rem;
+    width: 300px;
+}
+
+.hidden { display: none; }
+
+#dept-title {
+    text-align: center;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* --- 表格樣式 --- */
+.table-container {
+    background: white;
+    border-radius: 8px;
+    overflow-x: auto; /* 手機版可橫向捲動 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.main-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px; /* 確保表格不會擠在一起 */
+}
+
+.main-table th {
+    background-color: #eef2f5;
+    color: #444;
+    font-weight: bold;
+    padding: 12px;
+    text-align: center; /* 標題置中 */
+    border-bottom: 2px solid var(--primary-color);
+    white-space: nowrap;
+}
+
+.main-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    text-align: center; /* 內容置中 */
+}
+
+.main-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* 狀態文字顏色 */
+.status-ok { color: #2e7d32; font-weight: bold; } /* 綠色 */
+.status-warn { color: #ef6c00; font-weight: bold; } /* 橘色 */
+.status-err { color: #c62828; text-decoration: line-through; color: #999; } /* 放棄反灰 */
+
+.footer-note {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #666;
+    background: #fff;
+    padding: 15px;
+    border-left: 4px solid var(--accent-color);
+}
