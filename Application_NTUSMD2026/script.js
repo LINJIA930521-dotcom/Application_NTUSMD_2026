@@ -6,26 +6,57 @@ const departments = [
     { code: "N704", name: "羅馬拼音碩士學位學程", accepted: 5, waitlist: 16 }
 ];
 
-const lastNames = ['陳', '林', '黃', '張', '李', '王', '吳', '劉', '蔡', '楊', '許', '鄭', '謝', '郭', '洪', '邱', '曾', '廖', '賴', '徐'];
-const firstNames = ['大', '小', '安', '平', '凡', '家', '豪', '詩', '涵', '雅', '婷', '偉', '翔', '哲', '宇', '軒', '凱', '筑', '柔', '君'];
+// --- 擴充後的姓氏庫 (約80個) ---
+const lastNames = [
+    '陳', '林', '黃', '張', '李', '王', '吳', '劉', '蔡', '楊',
+    '許', '鄭', '謝', '郭', '洪', '曾', '邱', '廖', '賴', '徐',
+    '周', '葉', '蘇', '莊', '呂', '江', '何', '蕭', '羅', '高',
+    '潘', '簡', '朱', '鍾', '彭', '游', '詹', '胡', '施', '沈',
+    '余', '盧', '梁', '趙', '顏', '柯', '翁', '魏', '孫', '戴',
+    '范', '方', '宋', '鄧', '杜', '傅', '侯', '曹', '溫', '薛',
+    '丁', '馬', '蔣', '唐', '卓', '藍', '馮', '姚', '石', '董',
+    '紀', '歐', '程', '連', '古', '汪', '湯', '姜', '田', '康'
+];
 
-// --- 固定姓名產生器 (質數運算) ---
+// --- 擴充後的名字庫 (超過100個常見用字) ---
+const firstNames = [
+    // 較中性或男性常見
+    '家', '豪', '志', '明', '俊', '傑', '建', '宏', '良', '偉',
+    '凱', '文', '強', '銘', '憲', '達', '耀', '興', '華', '國',
+    '平', '安', '保', '成', '康', '榮', '信', '昌', '盛', '旺',
+    '宇', '軒', '辰', '逸', '宥', '睿', '碩', '鈞', '奇', '廷',
+    '柏', '翰', '霖', '澤', '楷', '恩', '熙', '瑋', '倫', '澔',
+    '博', '揚', '承', '哲', '智', '勇', '仁', '義', '禮', '信',
+    '子', '凡', '心', '思', '源', '新', '維', '展', '翼', '翔',
+    // 較女性常見
+    '雅', '婷', '怡', '君', '淑', '芬', '芳', '美', '麗', '玲',
+    '娟', '惠', '玉', '秀', '敏', '靜', '宜', '欣', '慧', '貞',
+    '詩', '涵', '筑', '柔', '瑄', '彤', '羽', '甯', '喬', '依',
+    '語', '昕', '潔', '晴', '琳', '蓉', '樺', '穎', '璇', '妍',
+    '若', '語', '熙', '甯', '唯', '晨', '苡', '安', '芯', '晴'
+];
+
+// --- 固定姓名產生器 (改良版) ---
 function getFixedName(deptIndex, studentIndex) {
-    const seed = ((deptIndex + 1) * 137) + (studentIndex * 997);
-    const last = lastNames[seed % lastNames.length];
-    const first = firstNames[(seed * 31) % firstNames.length];
+    // 使用兩組不同的大質數種子，分別選取姓和名，讓分佈更隨機
+    // 加上一個基礎偏移量，避免 deptIndex=0 或 studentIndex=0 時結果太接近
+    const seedLast = ((deptIndex + 113) * 9973) + ((studentIndex + 17) * 10007);
+    const seedFirst = ((deptIndex + 337) * 10009) + ((studentIndex + 19) * 9967);
+
+    const last = lastNames[seedLast % lastNames.length];
+    // 這裡可以選擇名字是單字還是雙字，目前維持單字 "姓O名"
+    const first = firstNames[seedFirst % firstNames.length];
+    
     return `${last}O${first}`;
 }
 
-// --- 產生准考證號 ---
-// 這裡模擬准考證號是按報名順序或其他邏輯流水編排，與成績無關
+// --- 產生准考證號 (維持不變) ---
 function generateID(deptCode, index) {
-    // 假設准考證號格式為：系所代碼 + 4位流水號 (例如: N7010001)
     const num = (index + 1).toString().padStart(4, '0');
     return `${deptCode}${num}`;
 }
 
-// --- 固定志願序 ---
+// --- 固定志願序 (維持不變) ---
 function getFixedPreference(deptIndex, studentIndex) {
     const seed = ((deptIndex + 1) * 43) + (studentIndex * 19);
     const mod = seed % 10; 
@@ -38,27 +69,19 @@ function getFixedPreference(deptIndex, studentIndex) {
     return `志願 ${rank}`;
 }
 
-// --- 固定狀態邏輯 (回傳物件包含 文字 與 CSS class) ---
-// type: 'A'(正取) 或 'B'(備取)
-// rankIndex: 在該類別中的排名索引 (0, 1, 2...)
+// --- 固定狀態邏輯 (維持不變) ---
 function getFixedStatus(type, deptIndex, rankIndex) {
-    // 使用排名作為種子的一部分，讓狀態分佈看起來與排名有關連
     const seed = ((deptIndex + 1) * 101) + (rankIndex * 17);
     const mod = seed % 100;
 
     if (type === 'A') { // 正取生
-        // 模擬：排名越靠後，放棄或未報到的機率稍微高一點點
-        // 基礎放棄率 5%，每增加一個排名位置增加 0.2% 的放棄機率
         const giveUpThreshold = 5 + rankIndex * 0.2;
-        // 基礎未報到率 3%
         const noShowThreshold = giveUpThreshold + 3;
 
         if (mod < giveUpThreshold) return { report: "放棄", waiting: "", class: "status-err" };
         if (mod < noShowThreshold) return { report: "未報到", waiting: "", class: "status-warn" };
         return { report: "已報到", waiting: "", class: "status-ok" };
     } else { // 備取生
-        // 模擬：備取排名越靠前，等待意願越高；排名越後，放棄機率越高
-        // 基礎放棄率 10%，每增加一個排名位置增加 0.5% 的放棄機率
         const giveUpThreshold = 10 + rankIndex * 0.5;
 
         if (mod < giveUpThreshold) return { report: "", waiting: "放棄", class: "status-err" };
@@ -66,40 +89,31 @@ function getFixedStatus(type, deptIndex, rankIndex) {
     }
 }
 
-// --- 模擬分數產生器 ---
-// 產生一個 0~100 的分數，用於排序
+// --- 模擬分數產生器 (維持不變) ---
 function getFixedScore(deptIndex, studentIndex) {
-    // 使用多個質數和運算製造隨機感，但結果是固定的
     const seed1 = (deptIndex + 1) * 397;
     const seed2 = (studentIndex + 1) * 13;
-    const noise = Math.sin(seed1 * seed2) * 10; // 加入正弦波製造非線性
-    let score = 75 + noise + (seed2 % 25); // 基礎分 75 + 雜訊 + 0~24 的變動
-    
-    // 確保分數在合理範圍內 (例如 60~100)
+    const noise = Math.sin(seed1 * seed2) * 10;
+    let score = 75 + noise + (seed2 % 25);
     score = Math.max(60, Math.min(100, score));
-    // 取小數點後兩位，減少同分機率
     return parseFloat(score.toFixed(2));
 }
 
-// 資料庫
+// 資料庫與主邏輯 (維持不變)
 const admissionData = {};
 
 departments.forEach((dept, deptIndex) => {
     let allStudents = [];
     const totalStudents = dept.accepted + dept.waitlist;
 
-    // --- 步驟 1: 產生所有考生的基本資料 (包含准考證號、姓名、模擬分數) ---
+    // --- 步驟 1: 產生所有考生的基本資料 ---
     for (let i = 0; i < totalStudents; i++) {
         allStudents.push({
-            // 准考證號：按流水號產生，與成績無關
             id: generateID(dept.code, i),
-            // 姓名
+            // 使用新的姓名產生器
             name: getFixedName(deptIndex, i),
-            // 模擬分數：用於後續排序決定排名
             score: getFixedScore(deptIndex, i),
-            // 志願序
             note: getFixedPreference(deptIndex, i),
-            // 以下欄位稍後填寫
             rankText: "",
             reportStatus: "",
             waitingStatus: "",
@@ -107,49 +121,39 @@ departments.forEach((dept, deptIndex) => {
         });
     }
 
-    // --- 步驟 2: 根據模擬分數進行排序，決定排名 ---
-    // 分數由高到低排序
+    // --- 步驟 2: 排序 ---
     allStudents.sort((a, b) => b.score - a.score);
 
-    // --- 步驟 3: 根據排序結果，填寫排名和狀態 ---
+    // --- 步驟 3: 填寫排名和狀態 ---
     allStudents.forEach((student, index) => {
-        let type; // 'A' 正取, 'B' 備取
-        let rankIndex; // 在該類別中的排名 (從 0 開始)
+        let type;
+        let rankIndex;
 
         if (index < dept.accepted) {
-            // 是正取生
             type = 'A';
             rankIndex = index;
             student.rankText = `正取 ${rankIndex + 1}`;
         } else {
-            // 是備取生
             type = 'B';
             rankIndex = index - dept.accepted;
             student.rankText = `備取 ${rankIndex + 1}`;
         }
 
-        // 根據新的身分 (正取/備取) 和排名，取得對應的狀態
         const statusObj = getFixedStatus(type, deptIndex, rankIndex); 
         student.reportStatus = statusObj.report;
         student.waitingStatus = statusObj.waiting;
         student.rowClass = statusObj.class;
         
-        // 移除暫存的 score 欄位，不需要顯示在表格上
         delete student.score;
     });
     
-    // --- 步驟 4: 決定榜單呈現順序 ---
-    // 這裡選擇「按排名」呈現，這是最常見的榜單形式。
-    // 如果想「按准考證號」呈現，可以取消下面這行的註解：
-    // allStudents.sort((a, b) => a.id.localeCompare(b.id));
-
     admissionData[dept.code] = {
         name: dept.name,
         students: allStudents
     };
 });
 
-// DOM 渲染 (這部分維持不變)
+// DOM 渲染 (維持不變)
 document.addEventListener('DOMContentLoaded', () => {
     const select = document.getElementById('dept-select');
     const resultArea = document.getElementById('result-area');
